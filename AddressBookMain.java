@@ -18,6 +18,9 @@ public class AddressBookMain {
 	
 	public void addPersonDetails() {
 		Scanner sc = new Scanner(System.in);
+		int check = 0;
+		
+		do {
 		
 			//variables
 			String firstName;
@@ -48,8 +51,14 @@ public class AddressBookMain {
 			System.out.println("Email ID : ");
 			email = sc.nextLine();
 			
+			System.out.println("Enter 1 to add new details");
+			check = sc.nextInt();
+			
 			Person person2 = new Person(firstName, lastName, address, city, state, zip, phoneNum, email);
 			personList.add(person2);
+			sc.nextLine();
+		}
+		while(check == 1);
 			
 	}
 	
