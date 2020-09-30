@@ -53,6 +53,8 @@ public class AddressBookMain {
 			
 	}
 	
+	//UC 3: EDIT DETAILS
+	
 	public void editPersonDetails() {
 		String FirstName;
 		String LastName;
@@ -92,21 +94,51 @@ public class AddressBookMain {
 		}
 	}
 	
+	//UC 4: DELETE DETAILS
+	
+	public void deletePersonDetails() {
+		Scanner sc = new Scanner(System.in);
+		String FirstName;
+		String LastName;
+		
+		System.out.println("Enter name of a person to DELETE contact details");
+		System.out.println("First Name : ");
+		FirstName = sc.nextLine();
+		System.out.println("Last Name : ");
+		LastName = sc.nextLine();
+		
+		for(int i = 0; i < personList.size(); i++) {
+			if(FirstName.equalsIgnoreCase(personList.get(i).firstName) && LastName.equalsIgnoreCase(personList.get(i).lastName)) {
+				personList.remove(personList.get(i));
+			}
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		System.out.println("WELCOME TO ADDRESS BOOK");
 		
-		AddressBookMain address_book_main = new AddressBookMain();
-		address_book_main.addPersonDetails();
+		AddressBookMain book = new AddressBookMain();
+		book.addPersonDetails();
 		
 		//Displaying all contacts from Address book
-		address_book_main.displayAllContacts();
+		book.displayAllContacts();
+		
+		//UC 3
 		
 		//editing details
-		address_book_main.editPersonDetails();
+		book.editPersonDetails();
 		
 		//Displaying all contacts from Address book after editing
-		address_book_main.displayAllContacts();
+		book.displayAllContacts();
+		
+		//UC 4
+		
+		//deleting details
+		book.deletePersonDetails();
+				
+		//Displaying all contacts from Address book after deleting
+		book.displayAllContacts();
 		
 	}
 }
