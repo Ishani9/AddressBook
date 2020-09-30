@@ -1,4 +1,6 @@
-public class Person{
+package Hello;
+
+public class Person {
 	public String firstName;
 	public String lastName;
 	public String address;
@@ -17,6 +19,13 @@ public class Person{
 		this.zip = zip;
 		this.phoneNum = phoneNum;
 		this.email = email;
-		System.out.println(zip);
 	}
+	
+	public String toString() {
+		String details = "First Name : " + firstName + "\nLast Name : " + lastName + "\nAddress : " + address + "\nCity : " + city 
+							+ "\nState : " + state + "\nZIP : " + zip + "\nPhone Number : " + phoneNum + "\nEmail ID : " + email + "\n";
+		return details;
+	}
+
+	
 }
