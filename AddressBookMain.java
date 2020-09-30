@@ -51,7 +51,7 @@ public class AddressBookMain {
 			System.out.println("Email ID : ");
 			email = sc.nextLine();
 			
-			System.out.println("Enter 1 to add new details");
+			System.out.println("Enter 1 to add new details or any other integer to exit: ");
 			check = sc.nextInt();
 			
 			Person person2 = new Person(firstName, lastName, address, city, state, zip, phoneNum, email);
@@ -125,7 +125,7 @@ public class AddressBookMain {
 	
 	
 	public static void main(String[] args) {
-		System.out.println("WELCOME TO ADDRESS BOOK");
+		System.out.println("WELCOME TO ADDRESS BOOK 1");
 		
 		AddressBookMain book = new AddressBookMain();
 		book.addPersonDetails();
@@ -148,6 +148,33 @@ public class AddressBookMain {
 				
 		//Displaying all contacts from Address book after deleting
 		book.displayAllContacts();
+		
+		
+		
+		// UC 6 ------ ADDING ANOTHER BOOK --------
+		
+		System.out.println("WELCOME TO ADDRESS BOOK 2");
+		
+		AddressBookMain book2 = new AddressBookMain();
+		book2.addPersonDetails();
+		
+		//Displaying all contacts from Address book
+		book2.displayAllContacts();
+				
+		//editing details
+		book2.editPersonDetails();
+		
+		//Displaying all contacts from Address book after editing
+		book2.displayAllContacts();
+		
+		//deleting details
+		book2.deletePersonDetails();
+				
+		//Displaying all contacts from Address book after deleting
+		book2.displayAllContacts();
+				
+
+		
 		
 	}
 }
