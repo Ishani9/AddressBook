@@ -1,180 +1,116 @@
 package Hello;
 
 import java.util.*;
-
-public class AddressBookMain {
-	public List <Person> personList;
+public class AddressBookMain{
+	
+	public static Map<String,AddressBook> addressBookMap;
+	
 	public AddressBookMain() {
-		personList = new ArrayList<Person>();
+		addressBookMap = new HashMap<>();
 	}
 	
-	public void displayAllContacts() {
-		System.out.println("CONTACT DETAILS FROM ADDRESS BOOK");
-		for(int i = 0; i < personList.size(); i++) {
-			System.out.println(personList.get(i));
-		}
-	}
+	public void addAddressBook(String city) {
+		AddressBook addBook = new AddressBook(city);
+		addressBookMap.put(city,addBook);
+	} 
 	
-	
-	public void addPersonDetails() {
-		Scanner sc = new Scanner(System.in);
-		int check = 0;
-		
-		do {
-		
-			//variables
-			String firstName;
-			String lastName;
-			String address;
-			String city;
-			String state;
-			int zip;
-			long  phoneNum;
-			String email;
-			
-			System.out.println("Enter following details : ");
-			System.out.println("First Name : ");
-			firstName = sc.nextLine();
-			System.out.println("Last Name : ");
-			lastName= sc.nextLine();
-			System.out.println("Address : ");
-			address = sc.nextLine();
-			System.out.println("City : ");
-			city = sc.nextLine();
-			System.out.println("State : ");
-			state = sc.nextLine();
-			System.out.println("ZIP : ");
-			zip = sc.nextInt();
-			System.out.println("Phone number : ");
-			phoneNum = sc.nextLong();
-			sc.nextLine();
-			System.out.println("Email ID : ");
-			email = sc.nextLine();
-			
-			System.out.println("Enter 1 to add new details or any other integer to exit: ");
-			check = sc.nextInt();
-			
-			Person person2 = new Person(firstName, lastName, address, city, state, zip, phoneNum, email);
-			personList.add(person2);
-			sc.nextLine();
-		}
-		while(check == 1);
-			
-	}
-	
-	//UC 3: EDIT DETAILS
-	
-	public void editPersonDetails() {
-		String FirstName;
-		String LastName;
-		String address;
-		String city;
-		String state;
-		int zip;
-		long  phoneNum;
-		String email;
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.println("Enter name of a person to edit contact details");
-		System.out.println("First Name : ");
-		FirstName = sc.nextLine();
-		System.out.println("Last Name : ");
-		LastName = sc.nextLine();
-		
-		for(int i = 0; i < personList.size(); i++) {
-			if(FirstName.equalsIgnoreCase(personList.get(i).firstName) && LastName.equalsIgnoreCase(personList.get(i).lastName)) {
-				System.out.println("Address : ");
-				address = sc.nextLine();
-				System.out.println("City : ");
-				city = sc.nextLine();
-				System.out.println("State : ");
-				state = sc.nextLine();
-				System.out.println("ZIP : ");
-				zip = sc.nextInt();
-				System.out.println("Phone number : ");
-				phoneNum = sc.nextLong();
-				sc.nextLine();
-				System.out.println("Email ID : ");
-				email = sc.nextLine();
-				
-				Person person3 = new Person(FirstName, LastName, address, city, state, zip, phoneNum, email);
-				personList.set(i, person3);
-			}
-		}
-	}
-	
-	//UC 4: DELETE DETAILS
-	
-	public void deletePersonDetails() {
-		Scanner sc = new Scanner(System.in);
-		String FirstName;
-		String LastName;
-		
-		System.out.println("Enter name of a person to DELETE contact details");
-		System.out.println("First Name : ");
-		FirstName = sc.nextLine();
-		System.out.println("Last Name : ");
-		LastName = sc.nextLine();
-		
-		for(int i = 0; i < personList.size(); i++) {
-			if(FirstName.equalsIgnoreCase(personList.get(i).firstName) && LastName.equalsIgnoreCase(personList.get(i).lastName)) {
-				personList.remove(personList.get(i));
-			}
-		}
-	}
+	public static List<Person> Book = new ArrayList<Person>();	
 	
 	
 	public static void main(String[] args) {
-		System.out.println("WELCOME TO ADDRESS BOOK 1");
-		
-		AddressBookMain book = new AddressBookMain();
-		book.addPersonDetails();
-		
-		//Displaying all contacts from Address book
-		book.displayAllContacts();
-		
-		//UC 3
-		
-		//editing details
-		book.editPersonDetails();
-		
-		//Displaying all contacts from Address book after editing
-		book.displayAllContacts();
-		
-		//UC 4
-		
-		//deleting details
-		book.deletePersonDetails();
-				
-		//Displaying all contacts from Address book after deleting
-		book.displayAllContacts();
+		Scanner scanner = new Scanner(System.in);
 		
 		
+		//call to previous UCs
 		
-		// UC 6 ------ ADDING ANOTHER BOOK --------
-		
-		System.out.println("WELCOME TO ADDRESS BOOK 2");
-		
-		AddressBookMain book2 = new AddressBookMain();
-		book2.addPersonDetails();
-		
-		//Displaying all contacts from Address book
-		book2.displayAllContacts();
-				
-		//editing details
-		book2.editPersonDetails();
-		
-		//Displaying all contacts from Address book after editing
-		book2.displayAllContacts();
-		
-		//deleting details
-		book2.deletePersonDetails();
-				
-		//Displaying all contacts from Address book after deleting
-		book2.displayAllContacts();
-				
-
-		
-		
+		int choice;
+		do {
+			AddressBookMain addBookMain = new AddressBookMain();
+			System.out.println("1.to create addbook");
+			System.out.println("2.to add contact to book");
+			System.out.println("3.to edit contact");
+			System.out.println("4.to delete contact");
+			System.out.println("5.to view addbook");
+			System.out.println("any other interger to exit");
+			choice = scanner.nextInt();
+			scanner.nextLine();
+			switch(choice) {
+				case 1:
+					System.out.println("Enter the city name to create addressBook");
+					String City = scanner.nextLine();
+					addBookMain.addAddressBook(City);
+					break;
+				case 2:  
+					System.out.println("Enter the details of person");
+					System.out.println("Enter the first name");
+					String firstName = scanner.nextLine();
+					System.out.println("Enter the last name");
+					String lastName = scanner.nextLine();
+					System.out.println("Enter the address");
+					String address = scanner.nextLine();
+					System.out.println("Enter the city name");
+					String city = scanner.nextLine();
+					System.out.println("Enter the state name");
+					String state = scanner.next();
+					System.out.println("Enter the ZIP code");
+					int zip = scanner.nextInt();
+					System.out.println("Enter the phone number");
+					long phoneNumber = scanner.nextLong();
+					scanner.nextLine();
+					System.out.println("Enter the email");
+					String email = scanner.nextLine();
+					Person person = new Person(firstName, lastName, address, city, state, zip, phoneNumber, email);
+					
+					for (Map.Entry<String,AddressBook> entry : addressBookMap.entrySet()) {   
+						if(entry.getKey().equalsIgnoreCase(city)) {
+							entry.getValue().addContact(person);
+						}
+						else {
+							System.out.println("The addressbook does not exist, please create addressbook for that city");
+						}
+					}
+					break;
+				case 3:
+					System.out.println("Enter the name to edit contact");
+					String name3 = scanner.nextLine();
+					System.out.println("Enter the last name to edit contact");
+					String lastname3 = scanner.nextLine();
+					System.out.println("Enter the city");
+					String city3 = scanner.nextLine();
+					for (Map.Entry<String,AddressBook> entry : addressBookMap.entrySet()) {   
+						if(entry.getKey().equalsIgnoreCase(city3)) {
+							entry.getValue().editContact(name3 + lastname3);
+						}
+						else {
+							System.out.println("The addressbook does not exist, please create addressbook for that city");
+						}
+					}
+					break;
+				case 4:
+					System.out.println("Enter the name to delete");
+					String name4 = scanner.nextLine();
+					System.out.println("Enter the city");
+					String city4 = scanner.nextLine();
+					for (Map.Entry<String,AddressBook> entry : addressBookMap.entrySet()) {   
+						if(entry.getKey().equalsIgnoreCase(city4)) {
+							entry.getValue().deleteContact(name4);
+						}
+						else {
+							System.out.println("The addressbook does not exist, please create addressbook for that city");
+						}
+					}
+					break;
+				case 5:
+					for (Map.Entry<String,AddressBook> entry : addressBookMap.entrySet()) {
+						System.out.println("The addressbook for city "+entry.getKey()+" is :");
+						entry.getValue().viewList();
+						
+					}
+					
+					
+					break;
+			}
+		}
+		while(choice == 1 || choice == 2 || choice == 3 || choice == 4 || choice == 5);
 	}
 }
