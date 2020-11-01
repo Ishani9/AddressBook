@@ -153,6 +153,23 @@ public class AddressBookMain extends AddressBook {
 		}
 	}
 	
+	/**
+	 * UC 12
+	 * @param args
+	 */
+	public void sortByZip() {
+		List<Person> personList = new ArrayList<>();
+		for (Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+			personList = entry.getValue().getPersonList().stream()
+					.sorted((p1, p2) -> Integer.compare(p1.getZip(), p2.getZip())).collect(Collectors.toList());
+		}
+
+		System.out.println("Sorted list of ZIPs : ");
+		for (Person list : personList) {
+			System.out.println(list.getZip());
+		}
+	}
+	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
@@ -180,7 +197,10 @@ public class AddressBookMain extends AddressBook {
 			System.out.println("6. Search person in state");
 			System.out.println("7. View person in city");
 			System.out.println("8. View person in state");
-		//	System.out.println("9. Display Address Book details");
+			System.out.println("9. Count by city");
+			System.out.println("10. Count by state");
+			System.out.println("11. Sot by name");
+			System.out.println("12. Sot by zip code");
 			int option = scanner.nextInt();
 			switch(option) {
 			case 1:
@@ -244,6 +264,8 @@ public class AddressBookMain extends AddressBook {
 			case 11:
 				addressBookMain.sortByName();
 				break;
+			case 12:
+				addressBookMain.sortByZip();
 		
 			default:
 				System.out.println("Select correct choice");
