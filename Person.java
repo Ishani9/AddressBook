@@ -1,14 +1,14 @@
-package Hello;
+package assignment;
 
 public class Person {
-	public String firstName;
-	public String lastName;
-	public String address;
-	public String city;
-	public String state;
-	public int zip;
-	public long  phoneNum;
-	public String email;
+	private String firstName;
+	private String lastName;
+	private String address;
+	private String city;
+	private String state;
+	private int zip;
+	private long  phoneNum;
+	private String email;
 	
 	public Person(String firstName, String lastName, String address, String city, String state, int zip, long phoneNum, String email) {
 		this.firstName = firstName;
@@ -70,6 +70,7 @@ public class Person {
 		this.email = email;
 	}
 	
+	@Override
 	public String toString() {
 		String details = "First Name : " + firstName + "\nLast Name : " + lastName + "\nAddress : " + address + "\nCity : " + city 
 							+ "\nState : " + state + "\nZIP : " + zip + "\nPhone Number : " + phoneNum + "\nEmail ID : " + email + "\n";
@@ -90,6 +91,4 @@ public class Person {
 
 	    return result;
 	}
-
-	
 }
