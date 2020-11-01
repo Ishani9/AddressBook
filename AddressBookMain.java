@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-//import java.util.*;
-import java.util.Scanner;
-
 import java.util.stream.Collectors;
+import java.util.Scanner;
 
 public class AddressBookMain extends AddressBook {
 		
 	public static HashMap<String, AddressBook> StateAddressBookMap = new HashMap<>();
 	public static HashMap<Object, Object> CityaddressBookMap = new HashMap<>();
 	
+	public enum IOServices {
+		CONSOLE_IO, 
+		FILE_IO, 
+		DB_IO, 
+		REST_IO;
+	}
+	
+	@SuppressWarnings("resource")
 	public void addPersonDetails() {
 		Scanner scanner = new Scanner(System.in);
 		
@@ -47,11 +53,12 @@ public class AddressBookMain extends AddressBook {
 			phoneNum = scanner.nextLong();
 			scanner.nextLine();
 			System.out.println("Email ID : ");
+			String email1 = scanner.nextLine();
 			email = scanner.nextLine();
 			
 			Person new_person = new Person(firstName, lastName, address, city, state, zip, phoneNum, email);
-					
-			boolean duplicate = StateAddressBookMap.get(state).personList.stream().anyMatch(n -> n.equals(new_person));
+			boolean duplicate = false;
+			duplicate = StateAddressBookMap.get(state).personList.stream().anyMatch(n -> n.equals(new_person));
 			if(!duplicate) {
 				StateAddressBookMap.get(state).personList.add(new_person);
 			}
@@ -60,6 +67,8 @@ public class AddressBookMain extends AddressBook {
 			}
 			
 			System.out.println("Enter 'y' to ADD NEW PERSON'S DETAILS.\nEnter any other key to STOP ADDING.");
+			checkToAdd = "y";
+			String checkToAdd1 = scanner.nextLine();
 			checkToAdd = scanner.nextLine();
 		}
 		
@@ -170,6 +179,22 @@ public class AddressBookMain extends AddressBook {
 		}
 	}
 	
+	/**
+	 * UC 13
+	 * @param ioService
+	 */
+	public void readData(IOServices ioService) {
+		if (ioService.equals(IOServices.FILE_IO))
+			System.out.println("reading data from file");
+			new AddressBookFileIOService().readData();
+	}
+
+	public void writeData(IOServices ioService) {
+		if (ioService.equals(IOServices.FILE_IO)) {
+			new AddressBookFileIOService().writeData(StateAddressBookMap);
+		}
+	}
+	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
@@ -199,8 +224,11 @@ public class AddressBookMain extends AddressBook {
 			System.out.println("8. View person in state");
 			System.out.println("9. Count by city");
 			System.out.println("10. Count by state");
-			System.out.println("11. Sot by name");
-			System.out.println("12. Sot by zip code");
+			System.out.println("11. Sort by name");
+			System.out.println("12. Sort by zip code");
+			System.out.println("13. Write to file");
+			System.out.println("14. Read from console");
+			
 			int option = scanner.nextInt();
 			switch(option) {
 			case 1:
@@ -253,11 +281,13 @@ public class AddressBookMain extends AddressBook {
 				break;
 			case 9:
 				System.out.println("Enter the city : ");
+				name1 = scanner.nextLine();
 				city = scanner.nextLine();
 				addressBookMain.countByCity(city);
 				break;
 			case 10:
 				System.out.println("Enter the state : ");
+				name1 = scanner.nextLine();
 				state = scanner.nextLine();
 				addressBookMain.countByState(state);
 				break;
@@ -266,6 +296,12 @@ public class AddressBookMain extends AddressBook {
 				break;
 			case 12:
 				addressBookMain.sortByZip();
+			case 13:
+				addressBookMain.writeData(IOServices.FILE_IO);
+				break;
+			case 14:
+				addressBookMain.readData(IOServices.FILE_IO);
+				break;			
 		
 			default:
 				System.out.println("Select correct choice");
