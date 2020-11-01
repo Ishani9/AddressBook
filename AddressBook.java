@@ -2,11 +2,8 @@ package assignment;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class AddressBook {
 	private String AddressBookName; 
@@ -23,6 +20,18 @@ public class AddressBook {
 	
 	public AddressBook() {
 		personList = new ArrayList<Person>();
+	}
+	
+	public String getAddressBookName() {
+		return AddressBookName;
+	}
+
+	public void setAddressBookName(String addressBookName) {
+		AddressBookName = addressBookName;
+	}
+
+	public void setPersonList(List<Person> personList) {
+		this.personList = personList;
 	}
 	
 	public void editPersonDetails() {

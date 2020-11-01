@@ -113,6 +113,10 @@ public class AddressBookMain extends AddressBook {
 		}
 	}
 	
+	/**
+	 * UC 10
+	 * @param city
+	 */
 	public void countByCity(String city) {
 		long count = 0;
 		for(Map.Entry<String,AddressBook> entry : StateAddressBookMap.entrySet()) {
@@ -122,6 +126,7 @@ public class AddressBookMain extends AddressBook {
 		}
 		System.out.println("Number of contacts in '" + city + "' : " + count);
 	}
+	
 	public void countByState(String state) {
 		long count = 0;
 		for(Map.Entry<String,AddressBook> entry : StateAddressBookMap.entrySet()) {
@@ -130,6 +135,22 @@ public class AddressBookMain extends AddressBook {
 					.count();
 		}
 		System.out.println("Number of contacts in '" + state + "' : " + count);
+	}
+	
+	/**
+	 * UC 11
+	 */
+	public void sortByName() {
+		List<Person> personList = new ArrayList<>();
+		for (Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+			personList = entry.getValue().getPersonList().stream()
+					.sorted((p1, p2) -> p1.getName().compareTo(p2.getName())).collect(Collectors.toList());
+		}
+
+		System.out.println("Sorted list : ");
+		for (Person list : personList) {
+			System.out.println(list.getName());
+		}
 	}
 	
 	@SuppressWarnings("resource")
@@ -219,6 +240,9 @@ public class AddressBookMain extends AddressBook {
 				System.out.println("Enter the state : ");
 				state = scanner.nextLine();
 				addressBookMain.countByState(state);
+				break;
+			case 11:
+				addressBookMain.sortByName();
 				break;
 		
 			default:
