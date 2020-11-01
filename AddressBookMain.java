@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class AddressBookMain extends AddressBook {
 		
-	public static HashMap<String, AddressBook> StateAddressBookMap = new HashMap<>();
+	public static HashMap<String, AddressBook> stateAddressBookMap = new HashMap<>();
 	
 	public enum IOServices {
 		CONSOLE_IO, 
@@ -57,9 +57,9 @@ public class AddressBookMain extends AddressBook {
 			
 			Person new_person = new Person(firstName, lastName, address, city, state, zip, phoneNum, email);
 			boolean duplicate = false;
-			duplicate = StateAddressBookMap.get(state).personList.stream().anyMatch(n -> n.equals(new_person));
+			duplicate = stateAddressBookMap.get(state).personList.stream().anyMatch(n -> n.equals(new_person));
 			if(!duplicate) {
-				StateAddressBookMap.get(state).personList.add(new_person);
+				stateAddressBookMap.get(state).personList.add(new_person);
 			}
 			else {
 				System.out.println("Same contact is already present Hence WILL NOT BE ADDED to address book");
@@ -75,7 +75,7 @@ public class AddressBookMain extends AddressBook {
 	
 	public void searchPersonByCity(String name, String city) {
 		List<Person> list = new ArrayList<Person>();
-		for(Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for(Map.Entry<String, AddressBook> entry : stateAddressBookMap.entrySet()) {
 			list = entry.getValue().getPersonList().stream()
 					.filter(c -> c.getCity().equals(city))
 					.filter(c -> (c.getFirstName() + " " + c.getLastName())
@@ -88,7 +88,7 @@ public class AddressBookMain extends AddressBook {
 	
 	public void searchPersonByState(String name, String state) {
 		List<Person> list = new ArrayList<Person>();
-		for(Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for(Map.Entry<String, AddressBook> entry : stateAddressBookMap.entrySet()) {
 			list = entry.getValue().getPersonList().stream()
 					.filter(c -> c.getState().equals(state))
 					.filter(c -> (c.getFirstName() + " " + c.getLastName())
@@ -101,7 +101,7 @@ public class AddressBookMain extends AddressBook {
 
 	public void viewPersonsByCity(String city) {
 		List<Person> list = new ArrayList<Person>();
-		for(Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for(Map.Entry<String, AddressBook> entry : stateAddressBookMap.entrySet()) {
 			list = entry.getValue().getPersonList().stream().filter(c -> c.getState().equals(city))
 					.collect(Collectors.toList());
 		}
@@ -112,7 +112,7 @@ public class AddressBookMain extends AddressBook {
 	
 	public void viewPersonsByState(String state) {
 		List<Person> list = new ArrayList<Person>();
-		for(Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for(Map.Entry<String, AddressBook> entry : stateAddressBookMap.entrySet()) {
 			list = entry.getValue().getPersonList().stream().filter(s -> s.getState().equals(state))
 					.collect(Collectors.toList());
 		}
@@ -127,7 +127,7 @@ public class AddressBookMain extends AddressBook {
 	 */
 	public void countByCity(String city) {
 		long count = 0;
-		for(Map.Entry<String,AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for(Map.Entry<String,AddressBook> entry : stateAddressBookMap.entrySet()) {
 			count = entry.getValue().getPersonList().stream()
 					.filter(c -> c.getCity().equals(city))
 					.count();
@@ -137,7 +137,7 @@ public class AddressBookMain extends AddressBook {
 	
 	public void countByState(String state) {
 		long count = 0;
-		for(Map.Entry<String,AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for(Map.Entry<String,AddressBook> entry : stateAddressBookMap.entrySet()) {
 			count = entry.getValue().getPersonList().stream()
 					.filter(c -> c.getCity().equals(state))
 					.count();
@@ -150,7 +150,7 @@ public class AddressBookMain extends AddressBook {
 	 */
 	public void sortByName() {
 		List<Person> personList = new ArrayList<>();
-		for (Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for (Map.Entry<String, AddressBook> entry : stateAddressBookMap.entrySet()) {
 			personList = entry.getValue().getPersonList().stream()
 					.sorted((p1, p2) -> p1.getName().compareTo(p2.getName())).collect(Collectors.toList());
 		}
@@ -167,7 +167,7 @@ public class AddressBookMain extends AddressBook {
 	 */
 	public void sortByZip() {
 		List<Person> personList = new ArrayList<>();
-		for (Map.Entry<String, AddressBook> entry : StateAddressBookMap.entrySet()) {
+		for (Map.Entry<String, AddressBook> entry : stateAddressBookMap.entrySet()) {
 			personList = entry.getValue().getPersonList().stream()
 					.sorted((p1, p2) -> Integer.compare(p1.getZip(), p2.getZip())).collect(Collectors.toList());
 		}
@@ -184,13 +184,13 @@ public class AddressBookMain extends AddressBook {
 	 */
 	public void readData(IOServices ioService) {
 		if (ioService.equals(IOServices.FILE_IO))
-			System.out.println("reading data from file");
+			System.out.println("Reading data from file");
 			new AddressBookFileIOService().readData();
 	}
 
 	public void writeData(IOServices ioService) {
 		if (ioService.equals(IOServices.FILE_IO)) {
-			new AddressBookFileIOService().writeData(StateAddressBookMap);
+			new AddressBookFileIOService().writeData(stateAddressBookMap);
 		}
 	}
 	
@@ -207,12 +207,27 @@ public class AddressBookMain extends AddressBook {
 
 	public void writeDataCSV(IOServices ioService) {
 		if (ioService.equals(IOServices.FILE_IO)) {
-			new AddressBookFileIOService().writeDataCSV(StateAddressBookMap);
+			new AddressBookFileIOService().writeDataCSV(stateAddressBookMap);
 		}
-
 	}
 	
-	@SuppressWarnings("resource")
+	/**
+	 * UC 15
+	 * 
+	 * @param ioService
+	 */
+	public void readDataGSON(IOServices ioService) {
+		if (ioService.equals(IOServices.FILE_IO)) {
+			new AddressBookFileIOService().readDataGSON();
+		}
+	}
+
+	public void writeDataGSON(IOServices ioService) {
+		if (ioService.equals(IOServices.FILE_IO)) {
+			new AddressBookFileIOService().writeDataGSON(stateAddressBookMap);
+		}
+	}
+	
 	public static void main(String[] args) {
 		
 		System.out.println("WELCOME TO ADDRESS BOOK");
@@ -223,7 +238,7 @@ public class AddressBookMain extends AddressBook {
 		String addressBookName = scanner.nextLine();
 		AddressBookMain addressBookMain = new AddressBookMain();
 		AddressBook NewAddressBook = new AddressBook(addressBookName);
-		StateAddressBookMap.put(addressBookName, NewAddressBook);
+		stateAddressBookMap.put(addressBookName, NewAddressBook);
 		addressBookMain.addPersonDetails();
 		String name;
 		String name1;
@@ -247,6 +262,8 @@ public class AddressBookMain extends AddressBook {
 			System.out.println("14. Read from console");
 			System.out.println("15. Write to CSV file");
 			System.out.println("16. Read from CSV file");
+			System.out.println("17. Write to JSON file");
+			System.out.println("18. Read from JSON file");
 			
 			int option = scanner.nextInt();
 			switch(option) {
@@ -257,20 +274,20 @@ public class AddressBookMain extends AddressBook {
 				System.out.println("Enter name of address book");
 				name1 = scanner.nextLine();
 				name = scanner.nextLine();
-				StateAddressBookMap.get(name).editPersonDetails();
+				stateAddressBookMap.get(name).editPersonDetails();
 				break;
 			case 3:
 				System.out.println("Enter name of address book");
 				name1 = scanner.nextLine();
 				name = scanner.nextLine();
-				StateAddressBookMap.get(name).deletePersonDetails();
+				stateAddressBookMap.get(name).deletePersonDetails();
 				break;
 			case 4:
 				System.out.println("Enter Address Book name : ");
 				name1 = scanner.nextLine();
 				name = scanner.nextLine();
 				NewAddressBook = new AddressBook(name);
-				StateAddressBookMap.put(name, NewAddressBook);
+				stateAddressBookMap.put(name, NewAddressBook);
 				break;
 			case 5:
 				System.out.println("Enter the name to search : ");
@@ -326,6 +343,12 @@ public class AddressBookMain extends AddressBook {
 				break;
 			case 16:
 				addressBookMain.readDataCSV(IOServices.FILE_IO);
+				break;
+			case 17:
+				addressBookMain.writeDataGSON(IOServices.FILE_IO);
+				break;
+			case 18:
+				addressBookMain.readDataGSON(IOServices.FILE_IO);
 				break;
 		
 			default:
