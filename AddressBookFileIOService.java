@@ -7,9 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -92,8 +96,51 @@ public class AddressBookFileIOService {
 				System.out.println();
 			}
 			csvReader.close();
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void writeDataGSON(Map<String, AddressBook> stateAddressBookMap) {
+		try {
+			Gson gson = new Gson();
+			FileWriter writer = new FileWriter(
+					"C:\\Users\\Ishani\\eclipse-workspace\\gradleAssignment\\AddressBook.json");
+			stateAddressBookMap.values().stream().map(entry -> entry.getPersonList())
+					.forEach(listEntry -> listEntry.forEach(person -> {
+						String json = gson.toJson(person);
+						try {
+							writer.write(json);
+						} catch (IOException exception) {
+							exception.printStackTrace();
+						}
+					}));
+			writer.close();
+			System.out.println("Data entered successfully to AddressBook.json file.");
+		} 
+		catch (IOException exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	public void readDataGSON() {
+		Gson gson = new Gson();
+		try {
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(
+					"C:\\Users\\Ishani\\eclipse-workspace\\gradleAssignment\\AddressBook.json"));
+			System.out.println("Reading from JSON file ...");
+			JsonStreamParser parser = new JsonStreamParser(bufferedReader);
+			while (parser.hasNext()) {
+				JsonElement json = parser.next();
+				if (json.isJsonObject()) {
+					Person person = gson.fromJson(json, Person.class);
+					System.out.println(person);
+				}
+			}
+		} 
+		catch (IOException exception) {
+			exception.printStackTrace();
 		}
 	}
 
