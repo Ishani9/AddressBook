@@ -113,6 +113,25 @@ public class AddressBookMain extends AddressBook {
 		}
 	}
 	
+	public void countByCity(String city) {
+		long count = 0;
+		for(Map.Entry<String,AddressBook> entry : StateAddressBookMap.entrySet()) {
+			count = entry.getValue().getPersonList().stream()
+					.filter(c -> c.getCity().equals(city))
+					.count();
+		}
+		System.out.println("Number of contacts in '" + city + "' : " + count);
+	}
+	public void countByState(String state) {
+		long count = 0;
+		for(Map.Entry<String,AddressBook> entry : StateAddressBookMap.entrySet()) {
+			count = entry.getValue().getPersonList().stream()
+					.filter(c -> c.getCity().equals(state))
+					.count();
+		}
+		System.out.println("Number of contacts in '" + state + "' : " + count);
+	}
+	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
@@ -191,6 +210,17 @@ public class AddressBookMain extends AddressBook {
 				state = scanner.nextLine();
 				addressBookMain.viewPersonsByState(state);
 				break;
+			case 9:
+				System.out.println("Enter the city : ");
+				city = scanner.nextLine();
+				addressBookMain.countByCity(city);
+				break;
+			case 10:
+				System.out.println("Enter the state : ");
+				state = scanner.nextLine();
+				addressBookMain.countByState(state);
+				break;
+		
 			default:
 				System.out.println("Select correct choice");
 				break;
@@ -198,7 +228,8 @@ public class AddressBookMain extends AddressBook {
 			System.out.println("Enter 'y' if you want to PERFORM NEW ACTION \nEnter any other key to EXIT");
 			name1 = scanner.nextLine();
 			yes = scanner.nextLine();
-		}while(yes.equalsIgnoreCase("y"));
+		}
+		while(yes.equalsIgnoreCase("y"));
 		
 	}
 	
