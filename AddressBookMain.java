@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class AddressBookMain extends AddressBook {
 		
 	public static HashMap<String, AddressBook> StateAddressBookMap = new HashMap<>();
-	public static HashMap<Object, Object> CityaddressBookMap = new HashMap<>();
 	
 	public enum IOServices {
 		CONSOLE_IO, 
@@ -33,7 +32,7 @@ public class AddressBookMain extends AddressBook {
 			String city;
 			String state;
 			int zip;
-			long  phoneNum;
+			long phoneNum;
 			String email;
 			
 			System.out.println("Enter following details : ");
@@ -195,6 +194,24 @@ public class AddressBookMain extends AddressBook {
 		}
 	}
 	
+	/**
+	 * UC 14
+	 * 
+	 * @param ioService
+	 */
+	public void readDataCSV(IOServices ioService) {
+		if (ioService.equals(IOServices.FILE_IO)) {
+			new AddressBookFileIOService().readDataCSV();
+		}
+	}
+
+	public void writeDataCSV(IOServices ioService) {
+		if (ioService.equals(IOServices.FILE_IO)) {
+			new AddressBookFileIOService().writeDataCSV(StateAddressBookMap);
+		}
+
+	}
+	
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		
@@ -228,6 +245,8 @@ public class AddressBookMain extends AddressBook {
 			System.out.println("12. Sort by zip code");
 			System.out.println("13. Write to file");
 			System.out.println("14. Read from console");
+			System.out.println("15. Write to CSV file");
+			System.out.println("16. Read from CSV file");
 			
 			int option = scanner.nextInt();
 			switch(option) {
@@ -301,18 +320,23 @@ public class AddressBookMain extends AddressBook {
 				break;
 			case 14:
 				addressBookMain.readData(IOServices.FILE_IO);
-				break;			
+				break;
+			case 15:
+				addressBookMain.writeDataCSV(IOServices.FILE_IO);
+				break;
+			case 16:
+				addressBookMain.readDataCSV(IOServices.FILE_IO);
+				break;
 		
 			default:
 				System.out.println("Select correct choice");
 				break;
 			}
 			System.out.println("Enter 'y' if you want to PERFORM NEW ACTION \nEnter any other key to EXIT");
-			name1 = scanner.nextLine();
+			String yes1 = scanner.nextLine();
 			yes = scanner.nextLine();
 		}
 		while(yes.equalsIgnoreCase("y"));
-		
+	scanner.close();	
 	}
-	
 }
