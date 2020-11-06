@@ -9,8 +9,12 @@ public class Person {
 	private int zip;
 	private long  phoneNum;
 	private String email;
+	private String type;
+	private String addbookName;
+	private int contactId;
 	
-	public Person(String firstName, String lastName, String address, String city, String state, int zip, long phoneNum, String email) {
+	public Person(String firstName, String lastName, String address, String city,
+			String state, int zip, long phoneNum, String email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -19,6 +23,14 @@ public class Person {
 		this.zip = zip;
 		this.phoneNum = phoneNum;
 		this.email = email;
+	}
+	
+	public Person(int contactId, String firstName, String lastName, String address, String city, String state, int zip,
+			long phoneNum, String email, String addbookName, String type) {
+		this(firstName, lastName, address, city, state, zip, phoneNum, email);
+		this.contactId = contactId;
+		this.addbookName = addbookName;
+		this.type = type;
 	}
 	
 	public String getName() {
@@ -72,6 +84,24 @@ public class Person {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public int getContactId() {
+		return contactId;
+	}
+	public void setContactId(int contactId) {
+		this.contactId = contactId;
+	}
+	public String getAddbookName() {
+		return addbookName;
+	}
+	public void setAddbookName(String addbookName) {
+		this.addbookName = addbookName;
 	}
 	
 	@Override
