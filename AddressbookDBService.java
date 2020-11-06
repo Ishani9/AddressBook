@@ -2,6 +2,7 @@ package assignment;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressbookDBService {
+	
 	private static AddressbookDBService addressBookDB;
+	private static PreparedStatement contactPrepareStatement;
 
 	public AddressbookDBService() {
 	}
@@ -27,7 +30,7 @@ public class AddressbookDBService {
 		String password = "root";
 		Connection connection = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(jdbcURL, userName, password);
 		} catch (Exception e) {
 			throw new DatabaseException("Connection was unsuccessful");
@@ -47,26 +50,97 @@ public class AddressbookDBService {
 		return this.getContactData(sql);
 	}
 
+	/**
+	 * UC 16
+	 * 
+	 * @param sql
+	 * @return
+	 * @throws DatabaseException
+	 */
 	private List<Person> getContactData(String sql) throws DatabaseException {
 		List<Person> contactList = new ArrayList<>();
 		try (Connection connection = this.getConnection()) {
 			Statement statement = (Statement) connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
-			while (resultSet.next()) {
-				int contactId = resultSet.getInt("ID");
-				String fname = resultSet.getString("firstName");
-				String lname = resultSet.getString("lastName");
-				String address = resultSet.getString("address");
-				int zip = resultSet.getInt("zip");
-				String city = resultSet.getString("city");
-				String state = resultSet.getString("state");
-				long phoneNumber = resultSet.getLong("phoneNum");
-				String email = resultSet.getString("email");
-				String addbookName = resultSet.getString("addressBookName");
-				String type = resultSet.getString("addressBookType");
-				contactList.add(new Person(contactId, fname, lname, address, city, state, zip, phoneNumber, email,
-						addbookName, type));
+			contactList = this.getData(resultSet);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return contactList;
+	}
+
+	/**
+	 * when result set passed returns list of persons
+	 * 
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<Person> getData(ResultSet resultSet) throws SQLException {
+		List<Person> contactList = new ArrayList<>();
+		while (resultSet.next()) {
+			int contactId = resultSet.getInt("ID");
+			String fname = resultSet.getString("firstName");
+			String lname = resultSet.getString("lastName");
+			String address = resultSet.getString("address");
+			int zip = resultSet.getInt("zip");
+			String city = resultSet.getString("city");
+			String state = resultSet.getString("state");
+			long phoneNumber = resultSet.getLong("phoneNum");
+			String email = resultSet.getString("email");
+			String addbookName = resultSet.getString("addressBookName");
+			String type = resultSet.getString("addressBookType");
+			contactList.add(new Person(contactId, fname, lname, address, city, state, zip, phoneNumber, email,
+					addbookName, type));
+		}
+		return contactList;
+	}
+	
+	/**
+	 * UC 17
+	 * 
+	 * updates person's data
+	 * 
+	 * @param name
+	 * @param phone
+	 * @return
+	 * @throws DatabaseException
+	 */
+	@SuppressWarnings("static-access")
+	public int updatePersonsData(String name, long phone) throws DatabaseException {
+		String sql = "update addressbook_table set phoneNum = ? where firstName = ?";
+		int result = 0;
+		try {
+			if (this.contactPrepareStatement == null) {
+				Connection connection = this.getConnection();
+				contactPrepareStatement = (PreparedStatement) connection.prepareStatement(sql);
 			}
+			contactPrepareStatement.setLong(1, phone);
+			contactPrepareStatement.setString(2, name);
+			result = contactPrepareStatement.executeUpdate();
+		} catch (Exception e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return result;
+	}
+
+	/**
+	 * returns list of persons whose full name matches with input name
+	 * 
+	 * @param name
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> getContactFromDatabase(String name) throws DatabaseException {
+		String[] fullName = name.split("[ ]");
+		String sql = String.format("SELECT * FROM addressbook_table, addressbookType_table WHERE "
+				+ "firstName = '%s' and lastName = '%s'",
+				fullName[0], fullName[1]);
+		List<Person> contactList = new ArrayList<>();
+		try (Connection connection = this.getConnection()) {
+			Statement statement = (Statement) connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			contactList = this.getData(resultSet);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
 		}
