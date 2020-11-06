@@ -20,7 +20,18 @@ import java.io.FileWriter;
 
 public class AddressBookFileIOService {
 	
+	public enum IOService {
+		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
+	};
+	
 	public static String FILE_NAME = "AddressBook.txt";
+	
+	private List<Person> contactList = new ArrayList<>();
+	private AddressbookDBService addressBookDB;
+
+	public AddressBookFileIOService() {
+		addressBookDB = AddressbookDBService.getInstance();
+	}
 
 	public void writeData(Map<String, AddressBook> stateAddressBookMap) {
 		StringBuffer personBuffer = new StringBuffer();
@@ -143,5 +154,22 @@ public class AddressBookFileIOService {
 			exception.printStackTrace();
 		}
 	}
+	
+	/**
+	 * UC 16
+	 * 
+	 * reads all data from database
+	 * 
+	 * @param ioService
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> readContactData(IOService ioService) throws DatabaseException {
+		if (ioService.equals(IOService.DB_IO)) {
+			this.contactList = addressBookDB.readData();
+		}
+		return this.contactList;
+	}
+	
 
 }
