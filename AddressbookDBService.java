@@ -1,13 +1,16 @@
 package assignment;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AddressbookDBService {
 	
@@ -43,7 +46,7 @@ public class AddressbookDBService {
 		String sql = "select addressbook_table.ID, addressbookType_table.addressbookName, "
 				+ "addressbookType_table.addressBookType, addressbook_table.firstName, addressbook_table.lastName, \r\n"
 				+ "addressbook_table.address, addressbook_table.city, addressbook_table.state, addressbook_table.zip, "
-				+ "addressbook_table.phoneNum, addressbook_table.email\r\n"
+				+ "addressbook_table.phoneNum, addressbook_table.email, addressbook_table.dateAdded\r\n"
 				+ "from addressbook_table\r\n"
 				+ "inner join addressbookType_table on addressBookType_table.ID = addressbook_table.ID\r\n";
 				
@@ -135,16 +138,31 @@ public class AddressbookDBService {
 		String[] fullName = name.split("[ ]");
 		String sql = String.format("SELECT * FROM addressbook_table, addressbookType_table WHERE "
 				+ "firstName = '%s' and lastName = '%s'",
-				fullName[0], fullName[1]);
-		List<Person> contactList = new ArrayList<>();
-		try (Connection connection = this.getConnection()) {
-			Statement statement = (Statement) connection.createStatement();
-			ResultSet resultSet = statement.executeQuery(sql);
-			contactList = this.getData(resultSet);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return contactList;
+				fullName[0], fullName[1]);		
+		return this.getContactData(sql);
 	}
-
+	
+	/**
+	 * UC 18
+	 * 
+	 * returns list of contacts added between given dates
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> readDataForGivenDateRange1(LocalDate start, LocalDate end) throws DatabaseException {
+		List<Person> contactAddedBetweenDates = addressBookDB.readData().stream()
+				.filter(person -> (person.getDateAdded().compareTo(start) >= 0 && 
+				person.getDateAdded().compareTo(end) <= 0))
+				.collect(Collectors.toList());
+		return contactAddedBetweenDates;
+	}
+	
+	public List<Person> readDataForGivenDateRange(LocalDate start, LocalDate end) throws DatabaseException {
+		String sql = String.format("SELECT * FROM addressbook_table, addressbookType_table WHERE "
+				+ "dateAdded between '%s' and '%s'", Date.valueOf(start), Date.valueOf(end));
+		return this.getContactData(sql);
+	}
 }

@@ -1,7 +1,10 @@
 package assignmenttest;
 
 import static org.junit.Assert.assertEquals;
+
+import java.time.LocalDate;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 
 import assignment.AddressBookFileIOService;
@@ -11,6 +14,16 @@ import assignment.Person;
 
 public class AddressBookFileServiceTest {
 	
+	private static AddressBookFileIOService addressBookService;
+	private static List<Person> contactData;
+
+	@Before
+	public void setUp() throws DatabaseException {
+		addressBookService = new AddressBookFileIOService();
+		contactData = addressBookService.readContactData(IOService.DB_IO);
+	}
+
+	
 	/**
 	 * UC 16
 	 * 
@@ -18,8 +31,7 @@ public class AddressBookFileServiceTest {
 	 */
 	@Test
 	public void givenContactDataInDB_WhenRetrieved_ShouldMatchContactCount() throws DatabaseException {
-		AddressBookFileIOService addressBookService = new AddressBookFileIOService();
-		List<Person> contactData = addressBookService.readContactData(IOService.DB_IO);
+
 		assertEquals(8, contactData.size());
 	}
 	
@@ -33,12 +45,29 @@ public class AddressBookFileServiceTest {
 	 */
 	@Test
 	public void givenNewDataForContact_WhenUpdated_ShouldBeInSync() throws DatabaseException {
-		AddressBookFileIOService addressBookService = new AddressBookFileIOService();
-		List<Person> contactData = addressBookService.readContactData(IOService.DB_IO);
+		
 		addressBookService.updatePersonsPhone("Bill Games", 123456789);
 		addressBookService.readContactData(IOService.DB_IO);
 		boolean result = addressBookService.checkContactDataSync("Bill Games");
 		assertEquals(true, result);
 		assertEquals(8, contactData.size());
+	}
+	
+	/**
+	 * UC 18
+	 * 
+	 * checking if the getContactsByDate() method returns list of persons added
+	 * between given dates
+	 * 
+	 * @throws DatabaseException
+	 */
+	@Test
+	public void givenContactDataInDB_WhenRetrieved_ShouldMatchContactAddedInGivenDateRangeCount()
+			throws DatabaseException {
+		List<Person> contactByDateList = null;
+		LocalDate start = LocalDate.of(2018, 10, 12);
+		LocalDate end = LocalDate.now();
+		contactByDateList = addressBookService.getContactsByDate(start, end);
+		assertEquals(16, contactByDateList.size());
 	}
 }

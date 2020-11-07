@@ -1,5 +1,7 @@
 package assignment;
 
+import java.time.LocalDate;
+
 public class Person {
 	private String firstName;
 	private String lastName;
@@ -12,6 +14,7 @@ public class Person {
 	private String type;
 	private String addbookName;
 	private int contactId;
+	private LocalDate dateAdded;
 	
 	public Person(String firstName, String lastName, String address, String city,
 			String state, int zip, long phoneNum, String email) {
@@ -31,6 +34,12 @@ public class Person {
 		this.contactId = contactId;
 		this.addbookName = addbookName;
 		this.type = type;
+	}
+	
+	public Person(int contactId, String firstName, String lastName, String address, String city, String state, int zip,
+			long phoneNum, String email, String addbookName, String type, LocalDate dateAdded) {
+		this(contactId, firstName, lastName, address, city, state, zip, phoneNum, email, addbookName, type);
+		this.dateAdded = dateAdded;
 	}
 	
 	public String getName() {
@@ -102,6 +111,12 @@ public class Person {
 	}
 	public void setAddbookName(String addbookName) {
 		this.addbookName = addbookName;
+	}
+	public LocalDate getDateAdded() {
+		return dateAdded;
+	}
+	public void setDateAdded(LocalDate dateAdded) {
+		this.dateAdded = dateAdded;
 	}
 	
 	@Override

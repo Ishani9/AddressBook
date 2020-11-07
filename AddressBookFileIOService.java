@@ -3,6 +3,7 @@ package assignment;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -197,6 +198,21 @@ public class AddressBookFileIOService {
 	public boolean checkContactDataSync(String name) throws DatabaseException {
 		List<Person> employeeList = addressBookDB.getContactFromDatabase(name);
 		return employeeList.get(0).equals(getContact(name));
+	}
+	
+	/**
+	 * UC 18
+	 * 
+	 * returns list of contacts added between given dates
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> getContactsByDate(LocalDate start, LocalDate end) throws DatabaseException {
+		List<Person> contactByDateList = addressBookDB.readDataForGivenDateRange(start, end);
+		return contactByDateList;
 	}
 	
 
