@@ -163,6 +163,42 @@ public class AddressbookDBService {
 	public List<Person> readDataForGivenDateRange(LocalDate start, LocalDate end) throws DatabaseException {
 		String sql = String.format("SELECT * FROM addressbook_table, addressbookType_table WHERE "
 				+ "dateAdded between '%s' and '%s'", Date.valueOf(start), Date.valueOf(end));
-		return this.getContactData(sql);
+		return this.getContactData(sql).stream().distinct().collect(Collectors.toList());
+	}
+	
+	/**
+	 * returns list of contacts belonging to given city
+	 * 
+	 * @param city
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> getContactsByCity(String city) throws DatabaseException {
+		String sql = String.format("select addressbook_table.ID, addressbookType_table.addressbookName, "
+				+ "addressbookType_table.addressBookType, addressbook_table.firstName, addressbook_table.lastName, \r\n"
+				+ "addressbook_table.address, addressbook_table.city, addressbook_table.state, addressbook_table.zip, "
+				+ "addressbook_table.phoneNum, addressbook_table.email, addressbook_table.dateAdded\r\n"
+				+ "from addressbook_table\r\n"
+				+ "inner join addressbookType_table on addressBookType_table.ID = addressbook_table.ID\r\n"
+				+ "WHERE city = '%s'", city);
+		return getContactData(sql).stream().distinct().collect(Collectors.toList());
+	}
+	
+	/**
+	 * returns list of contacts belonging to given state
+	 * 
+	 * @param state
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> getContactsByState(String state) throws DatabaseException {
+		String sql = String.format("select addressbook_table.ID, addressbookType_table.addressbookName, "
+				+ "addressbookType_table.addressBookType, addressbook_table.firstName, addressbook_table.lastName, \r\n"
+				+ "addressbook_table.address, addressbook_table.city, addressbook_table.state, addressbook_table.zip, "
+				+ "addressbook_table.phoneNum, addressbook_table.email, addressbook_table.dateAdded\r\n"
+				+ "from addressbook_table\r\n"
+				+ "inner join addressbookType_table on addressBookType_table.ID = addressbook_table.ID\r\n"
+				+ "WHERE state = '%s'", state);
+		return getContactData(sql).stream().distinct().collect(Collectors.toList());
 	}
 }
