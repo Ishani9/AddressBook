@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -201,4 +202,103 @@ public class AddressbookDBService {
 				+ "WHERE state = '%s'", state);
 		return getContactData(sql).stream().distinct().collect(Collectors.toList());
 	}
+	
+	/**
+	 * Adding contact to the address book database and returning added records
+	 * 
+	 * @param firstName
+	 * @param lastName
+	 * @param address
+	 * @param city
+	 * @param state
+	 * @param zip
+	 * @param phone
+	 * @param email
+	 * @param addbookName
+	 * @param dateAdded
+	 * @return
+	 * @throws DatabaseException
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("static-access")
+	public List<Person> addContactToDatabase(String firstName, String lastName, String address, String city,
+			String state, int zip, long phone, String email, List<String> types, LocalDate dateAdded)
+			throws DatabaseException, SQLException {
+		int contactId = -1;
+		Connection connection = null;
+		List<Person> addedContacts = new ArrayList<>();
+		connection = this.getConnection();
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException exception) {
+			throw new DatabaseException(exception.getMessage());
+		}
+
+		try (Statement statement = (Statement) connection.createStatement()) { // adding to addressbook_table
+			String sql = String.format(
+					"insert into addressbook_table (firstName, lastName, address, city, state, zip, phoneNum, email, date_added) "
+					+ "values ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+					firstName, lastName, address, city, state, zip, phone, email, Date.valueOf(dateAdded));
+			int rowAffected = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+			if (rowAffected == 1) {
+				ResultSet resultSet = statement.getGeneratedKeys();
+				if (resultSet.next())
+					contactId = resultSet.getInt(1);
+			}
+		} catch (SQLException exception) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				throw new DatabaseException(e.getMessage());
+			}
+			throw new DatabaseException("Unable to add to addressbook_table");
+		}
+
+		HashMap<String, String> typeAddbookNameMap = new HashMap<>();
+		try (Statement tempStatement = (Statement) connection.createStatement()) { // getting addressbook_types
+			String sqlGetType = String.format("select * from addressbookType_table");
+			ResultSet resultSet = tempStatement.executeQuery(sqlGetType);
+			while (resultSet.next()) {
+				typeAddbookNameMap.put(resultSet.getString(" addressBookType"), resultSet.getString(" addressBookName"));
+			}
+		} catch (Exception e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		final int id = contactId;
+		try (Statement statement = (Statement) connection.createStatement()) { // adding to addressbook_table
+			types.forEach(type -> {
+				String sql = String.format(
+						"insert into addressbookType_table (id, addressbookName) values ('%s', '%s')", id,
+						typeAddbookNameMap.get(type));
+				try {
+					statement.executeUpdate(sql);
+				} catch (SQLException e) {
+				}
+			});
+			types.forEach(type -> addedContacts.add(new Person(id, firstName, lastName, address, city, state,
+					zip, phone, email, typeAddbookNameMap.get(type), type, dateAdded)));
+
+		} catch (SQLException exception) {
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				throw new DatabaseException(e.getMessage());
+			}
+			throw new DatabaseException("Unable to add to addressbookType_table");
+		}
+
+
+		try {
+			connection.commit();
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+		}
+		return addedContacts;
+	}
+	
 }
+

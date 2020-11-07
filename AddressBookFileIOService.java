@@ -3,6 +3,7 @@ package assignment;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -238,6 +239,34 @@ public class AddressBookFileIOService {
 	public List<Person> getContactsByState(String state) throws DatabaseException {
 		return addressBookDB.getContactsByState(state);
 	}
+	
+	/**
+	 * UC 20
+	 * 
+	 * Adding new contact to database
+	 * 
+	 * @param firstName
+	 * @param lastName
+	 * @param address
+	 * @param city
+	 * @param state
+	 * @param zip
+	 * @param phone
+	 * @param email
+	 * @param addbookName
+	 * @throws DatabaseException
+	 * @throws SQLException
+	 */
+	public void addNewContact(String firstName, String lastName, String address, String city, String state, int zip,
+			long phone, String email, List<String> types) throws DatabaseException {
+		try {
+			addressBookDB.addContactToDatabase(firstName, lastName, address, city, state, zip, phone, email,
+					types, LocalDate.now());
+		} catch (DatabaseException | SQLException exception) {
+			throw new DatabaseException(exception.getMessage());
+		}
+	}
+
 	
 
 }
