@@ -6,8 +6,13 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -21,6 +26,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 public class AddressBookFileIOService {
+	
+	private static final Logger LOG = LogManager.getLogger(AddressBookFileIOService.class);
 	
 	public enum IOService {
 		CONSOLE_IO, FILE_IO, DB_IO, REST_IO
@@ -267,6 +274,61 @@ public class AddressBookFileIOService {
 		}
 	}
 
-	
+	/**
+	 * UC 21
+	 * 
+	 * adding multiple new contacts in database using threads
+	 * 
+	 * @param newContactsList
+	 * @throws DatabaseException
+	 */
+	public void addMultipleContacts(List<Person> newContactsList) throws DatabaseException {
+		Map<Integer, Boolean> contactAdditionStatus = new HashMap<Integer, Boolean>();
+		newContactsList.forEach(person -> {
+			Runnable task = () -> {
+				contactAdditionStatus.put(person.hashCode(), false);
+				LOG.info("Contact Being Added: " + Thread.currentThread().getName());
+				try {
+					addNewContact(person.getFirstName(), person.getLastName(), person.getAddress(), person.getCity(),
+							person.getState(), person.getZip(), person.getPhoneNumber(), person.getEmail(),
+							Arrays.asList(person.getType()));
+				} catch (DatabaseException exception) {
+					exception.printStackTrace();
+				}
+				contactAdditionStatus.put(person.hashCode(), true);
+				LOG.info("Contact Added: " + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, person.getName());
+			thread.start();
+		});
+		while (contactAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException exception) {
+				throw new DatabaseException(exception.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * checking if data added is in sync
+	 * 
+	 * @param namesList
+	 * @return
+	 */
+	public boolean checkMultipleContactDataSync(List<String> namesList) {
+		List<Boolean> resultList = new ArrayList<>();
+		namesList.forEach(name -> {
+			try {
+				resultList.add(checkContactDataSync(name));
+			} catch (DatabaseException e) {
+				e.printStackTrace();
+			}
+		});
+		if (resultList.contains(false)) {
+			return false;
+		}
+		return true;
+	}
 
 }

@@ -162,8 +162,13 @@ public class AddressbookDBService {
 	}
 	
 	public List<Person> readDataForGivenDateRange(LocalDate start, LocalDate end) throws DatabaseException {
-		String sql = String.format("SELECT * FROM addressbook_table, addressbookType_table WHERE "
-				+ "dateAdded between '%s' and '%s'", Date.valueOf(start), Date.valueOf(end));
+		String sql = String.format("select addressbook_table.ID, addressbookType_table.addressbookName, "
+				+ "addressbookType_table.addressBookType, addressbook_table.firstName, addressbook_table.lastName, \r\n"
+				+ "addressbook_table.address, addressbook_table.city, addressbook_table.state, addressbook_table.zip, "
+				+ "addressbook_table.phoneNum, addressbook_table.email, addressbook_table.dateAdded\r\n"
+				+ "from addressbook_table\r\n"
+				+ "inner join addressbookType_table on addressBookType_table.ID = addressbook_table.ID\r\n"
+				+ "WHERE dateAdded between '%s' and '%s'", Date.valueOf(start), Date.valueOf(end));
 		return this.getContactData(sql).stream().distinct().collect(Collectors.toList());
 	}
 	
@@ -185,6 +190,7 @@ public class AddressbookDBService {
 		return getContactData(sql).stream().distinct().collect(Collectors.toList());
 	}
 	
+	
 	/**
 	 * returns list of contacts belonging to given state
 	 * 
@@ -204,6 +210,8 @@ public class AddressbookDBService {
 	}
 	
 	/**
+	 * UC 20
+	 * 
 	 * Adding contact to the address book database and returning added records
 	 * 
 	 * @param firstName
@@ -286,7 +294,6 @@ public class AddressbookDBService {
 			}
 			throw new DatabaseException("Unable to add to addressbookType_table");
 		}
-
 
 		try {
 			connection.commit();

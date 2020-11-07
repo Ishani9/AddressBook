@@ -70,7 +70,7 @@ public class AddressBookFileServiceTest {
 		LocalDate start = LocalDate.of(2018, 10, 12);
 		LocalDate end = LocalDate.now();
 		contactByDateList = addressBookService.getContactsByDate(start, end);
-		assertEquals(16, contactByDateList.size());
+		assertEquals(3, contactByDateList.size());
 	}
 	
 	/**
@@ -104,9 +104,31 @@ public class AddressBookFileServiceTest {
 	 */
 	@Test
 	public void givenNewContact_WhenAdded_ShouldSincWithDB() throws DatabaseException {
-		//addressBookService.addNewContact("Ball", "Gammes", "USA", "SF", "CA", 100010,  20180103, "xyz.com", Arrays.asList("family", "friends"));
+		addressBookService.addNewContact("Ball", "Gammes", "USA", "SF", "CA", 100010,  20180103L, "xyz.com", Arrays.asList("family", "friends"));
 		contactData = addressBookService.readContactData(IOService.DB_IO);
 		boolean result = addressBookService.checkContactDataSync("Ball Gammes");
+		assertTrue(result);
+	}
+	
+	/**
+	 * UC 21
+	 * 
+	 * adding multiple new contact and checking if it is in sync
+	 * 
+	 * @throws DatabaseException
+	 * @throws SQLException
+	 */
+	@Test
+	public void givenMultipleNewContact_WhenAddedUsingThreads_ShouldSincWithDB() throws DatabaseException {
+		List<Person> newContactsList = Arrays.asList(
+				new Person(0, "Ball", "Games", "USA", "SF", "CA", 100010, 20180103L, "xyz@gmail.com",
+						"", "work"),
+				new Person(0, "Lill", "Gamma", "USA", "SF", "CA", 100010, 20180103L, "Lillli@gmail.com",
+						"", "family"));
+		addressBookService.addMultipleContacts(newContactsList);
+		contactData = addressBookService.readContactData(IOService.DB_IO);
+		boolean result = addressBookService
+				.checkMultipleContactDataSync(Arrays.asList("Lill Gamma"));
 		assertTrue(result);
 	}
 	
