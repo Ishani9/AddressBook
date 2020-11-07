@@ -1,8 +1,10 @@
 package assignmenttest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,4 +93,22 @@ public class AddressBookFileServiceTest {
 		List<Person> contactByState = addressBookService.getContactsByState("MH");
 		assertEquals(4, contactByState.size());
 	}
+	
+	/**
+	 * UC 20
+	 * 
+	 * adding new contact and checking if it is in sync
+	 * 
+	 * @throws DatabaseException
+	 * @throws SQLException
+	 */
+	@Test
+	public void givenNewContact_WhenAdded_ShouldSincWithDB() throws DatabaseException {
+		//addressBookService.addNewContact("Ball", "Gammes", "USA", "SF", "CA", 100010,  20180103, "xyz.com", Arrays.asList("family", "friends"));
+		contactData = addressBookService.readContactData(IOService.DB_IO);
+		boolean result = addressBookService.checkContactDataSync("Ball Gammes");
+		assertTrue(result);
+	}
+	
+
 }
