@@ -215,5 +215,29 @@ public class AddressBookFileIOService {
 		return contactByDateList;
 	}
 	
+	/**
+	 * UC 19
+	 * 
+	 * returns list of contacts belonging to given city
+	 * 
+	 * @param city
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> getContactsByCity(String city) throws DatabaseException {
+		return addressBookDB.getContactsByCity(city);
+	}
+
+	/**
+	 * returns list of contacts belonging to given state
+	 * 
+	 * @param state
+	 * @return
+	 * @throws DatabaseException
+	 */
+	public List<Person> getContactsByState(String state) throws DatabaseException {
+		return addressBookDB.getContactsByState(state);
+	}
+	
 
 }
