@@ -373,7 +373,19 @@ public class AddressBookFileIOService {
 				contact.setPhoneNumber(phone);
 		}
 	}
-
+	
+	/**
+	 * UC 25
+	 * 
+	 * deleting from application memory
+	 * 
+	 * @param contact
+	 */
+	public void deleteFromApplicationMemory(Person contact) {
+		List<Person> newList = contactList.stream().filter(p -> !p.getName().equals(contact.getName()))
+				.collect(Collectors.toList());
+		contactList = newList;
+	}
 
 
 }
