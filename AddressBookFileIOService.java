@@ -203,26 +203,6 @@ public class AddressBookFileIOService {
 			contact.setPhoneNumber(phone);
 	}
 	
-	/**
-	 * UC 23
-	 * 
-	 * @param name
-	 * @param phone
-	 * @param ioService
-	 * @throws DatabaseException
-	 */
-	public void updatePersonsPhone(String name, long phone, IOService ioService) throws DatabaseException {
-		if (ioService.equals(IOService.DB_IO)) {
-			int result = addressBookDB.updatePersonsData(name, phone);
-			if (result == 0)
-				return;
-		}
-		if (ioService.equals(IOService.REST_IO)) {
-			Person contact = this.getContact(name);
-			if (contact != null)
-				contact.setPhoneNumber(phone);
-		}
-	}
 
 	public Person getContact(String name) {
 		Person contact = this.contactList.stream().filter(contactData -> contactData.getName().equals(name)).findFirst()
@@ -373,17 +353,6 @@ public class AddressBookFileIOService {
 		contactList.add(contact);
 	}
 	
-	/**
-	 * UC 23
-	 * 
-	 * deleting from application memory
-	 * 
-	 * @param contact
-	 */
-	public void deleteFromApplicationMemory(Person contact) {
-		List<Person> newList = contactList.stream().filter(p -> !p.getName().equals(contact.getName()))
-				.collect(Collectors.toList());
-		contactList = newList;
-	}
+	
 
 }
