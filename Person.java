@@ -16,6 +16,7 @@ public class Person {
 	private String addbookName;
 	private int contactId;
 	private LocalDate dateAdded;
+	private int id;
 	
 	public Person(String firstName, String lastName, String address, String city,
 			String state, int zip, long phoneNum, String email) {
@@ -27,6 +28,12 @@ public class Person {
 		this.zip = zip;
 		this.phoneNum = phoneNum;
 		this.email = email;
+	}
+	
+	public Person(String firstName, String lastName, String address, String city, String state, int zip, long phoneNum,
+			String email, LocalDate dateAdded) {
+		this(firstName, lastName, address, city, state, zip, phoneNum, email);
+		this.dateAdded = dateAdded;
 	}
 	
 	public Person(int contactId, String firstName, String lastName, String address, String city, String state, int zip,
@@ -41,6 +48,13 @@ public class Person {
 			long phoneNum, String email, String addbookName, String type, LocalDate dateAdded) {
 		this(contactId, firstName, lastName, address, city, state, zip, phoneNum, email, addbookName, type);
 		this.dateAdded = dateAdded;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int contactId) {
+		this.id = contactId;
 	}
 	
 	public String getName() {
