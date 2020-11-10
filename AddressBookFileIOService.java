@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -201,8 +202,29 @@ public class AddressBookFileIOService {
 		if (contact != null)
 			contact.setPhoneNumber(phone);
 	}
+	
+	/**
+	 * UC 23
+	 * 
+	 * @param name
+	 * @param phone
+	 * @param ioService
+	 * @throws DatabaseException
+	 */
+	public void updatePersonsPhone(String name, long phone, IOService ioService) throws DatabaseException {
+		if (ioService.equals(IOService.DB_IO)) {
+			int result = addressBookDB.updatePersonsData(name, phone);
+			if (result == 0)
+				return;
+		}
+		if (ioService.equals(IOService.REST_IO)) {
+			Person contact = this.getContact(name);
+			if (contact != null)
+				contact.setPhoneNumber(phone);
+		}
+	}
 
-	private Person getContact(String name) {
+	public Person getContact(String name) {
 		Person contact = this.contactList.stream().filter(contactData -> contactData.getName().equals(name)).findFirst()
 				.orElse(null);
 		return contact;
@@ -338,6 +360,30 @@ public class AddressBookFileIOService {
 	
 	public int countEntries() {
 		return contactList.size();
+	}
+	
+	/**
+	 * UC 22
+	 * 
+	 * adds new contacts to application memory
+	 * 
+	 * @param newContacts
+	 */
+	public void addToApplicationMemory(Person contact) {
+		contactList.add(contact);
+	}
+	
+	/**
+	 * UC 23
+	 * 
+	 * deleting from application memory
+	 * 
+	 * @param contact
+	 */
+	public void deleteFromApplicationMemory(Person contact) {
+		List<Person> newList = contactList.stream().filter(p -> !p.getName().equals(contact.getName()))
+				.collect(Collectors.toList());
+		contactList = newList;
 	}
 
 }
