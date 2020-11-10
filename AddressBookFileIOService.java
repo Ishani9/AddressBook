@@ -339,5 +339,16 @@ public class AddressBookFileIOService {
 	public int countEntries() {
 		return contactList.size();
 	}
+	
+	/**
+	 * UC 22
+	 * 
+	 * adds new contacts to application memory
+	 * 
+	 * @param newContacts
+	 */
+	public void addToApplicationMemory(Person contact) {
+		contactList.add(contact);
+	}
 
 }
