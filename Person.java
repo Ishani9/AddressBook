@@ -1,6 +1,7 @@
 package assignment;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Person {
 	private String firstName;
@@ -140,4 +141,10 @@ public class Person {
 
 	    return result;
 	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(contactId, firstName, lastName, phoneNum);
+	}
+	
 }
