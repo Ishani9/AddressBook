@@ -41,6 +41,11 @@ public class AddressBookFileIOService {
 	public AddressBookFileIOService() {
 		addressBookDB = AddressbookDBService.getInstance();
 	}
+	
+	public AddressBookFileIOService(List<Person> contactList) {
+		this();
+		this.contactList = contactList;
+	}
 
 	public void writeData(Map<String, AddressBook> stateAddressBookMap) {
 		StringBuffer personBuffer = new StringBuffer();
@@ -329,6 +334,10 @@ public class AddressBookFileIOService {
 			return false;
 		}
 		return true;
+	}
+	
+	public int countEntries() {
+		return contactList.size();
 	}
 
 }
