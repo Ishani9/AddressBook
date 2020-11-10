@@ -353,6 +353,27 @@ public class AddressBookFileIOService {
 		contactList.add(contact);
 	}
 	
-	
+	/**
+	 * UC 24
+	 * 
+	 * @param name
+	 * @param phone
+	 * @param ioService
+	 * @throws DatabaseException
+	 */
+	public void updatePersonsPhone(String name, long phone, IOService ioService) throws DatabaseException {
+		if (ioService.equals(IOService.DB_IO)) {
+			int result = addressBookDB.updatePersonsData(name, phone);
+			if (result == 0)
+				return;
+		}
+		if (ioService.equals(IOService.REST_IO)) {
+			Person contact = this.getContact(name);
+			if (contact != null)
+				contact.setPhoneNumber(phone);
+		}
+	}
+
+
 
 }
